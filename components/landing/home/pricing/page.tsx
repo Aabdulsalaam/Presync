@@ -13,7 +13,7 @@ export default function Pricing() {
           </h2>
 
           <p className="mt-5 text-base sm:text-lg text-[#6B7280] leading-7">
-            Choose the plan that fits your organization's needs.
+            Choose the plan that fits your organization&apos;s needs.
           </p>
         </div>
 

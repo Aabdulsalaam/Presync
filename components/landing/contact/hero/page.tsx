@@ -76,7 +76,7 @@ function HeroContent() {
     data-name="text and button"
   >
     <h1 className="font-['Lato:Black',sans-serif] text-[42px] font-black leading-[1.05] tracking-[-1px] sm:text-[56px] md:text-[68px] lg:text-[72px] xl:text-[81px] xl:leading-[97.2px]">
-      <span className="text-[#e5f4a8]">LET'S OPTIMIZE </span>
+      <span className="text-[#e5f4a8]">LET&apos;S OPTIMIZE </span>
 
       
       <br />
