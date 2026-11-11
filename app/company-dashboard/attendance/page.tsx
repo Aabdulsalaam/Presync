@@ -1,7 +1,7 @@
-import AttendancePage from "../../../components/attendancepage/page";
+import AttendancePage from "../../../components/company admin/attendancepage/page";
 
 
-export default function SignIn() {
+export default function Attendance() {
   return (
     <>
       <AttendancePage />

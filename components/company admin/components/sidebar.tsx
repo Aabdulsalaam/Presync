@@ -1,9 +1,9 @@
+
 "use client";
 
 import {
   BarChart3,
   CalendarDays,
-  ChevronLeft,
   ClipboardCheck,
   Folder,
   LayoutDashboard,
@@ -48,7 +48,7 @@ const menuItems: MenuItem[] = [
   {
     name: "Analytics",
     icon: BarChart3,
-    href: "/company-dashboard",
+    href: "/company-dashboard/analytics",
   },
   {
     name: "Messages",
@@ -63,7 +63,7 @@ const menuItems: MenuItem[] = [
   {
     name: "Settings",
     icon: Settings,
-    href: "/company-dashboard",
+    href: "/company-dashboard/settings",
   },
 ];
 
@@ -74,7 +74,9 @@ export default function DashboardSidebar() {
 
   return (
     <aside
-      className={`fixed bottom-4 left-5 top-4 z-50 flex flex-col overflow-hidden rounded-r-2xl bg-[#4b6ff8] text-white transition-all duration-300 ${
+      onMouseEnter={() => setIsExpanded(true)}
+      onMouseLeave={() => setIsExpanded(false)}
+      className={`fixed bottom-4 left-5 top-4 z-50 flex flex-col overflow-hidden rounded-r-2xl bg-[#4b6ff8] text-white transition-all duration-300 ease-in-out ${
         isExpanded ? "w-[280px]" : "w-[70px]"
       }`}
     >
@@ -87,18 +89,9 @@ export default function DashboardSidebar() {
             : "justify-center pt-5"
         }`}
       >
-        <button
-          type="button"
-          onClick={() => setIsExpanded(!isExpanded)}
-          aria-label={
-            isExpanded
-              ? "Collapse sidebar"
-              : "Expand sidebar"
-          }
-          className="flex size-9 shrink-0 items-center justify-center"
-        >
+        <div className="flex size-9 shrink-0 items-center justify-center">
           <span className="size-7 bg-[#d9ff35]" />
-        </button>
+        </div>
 
         {isExpanded && (
           <div>
@@ -120,10 +113,7 @@ export default function DashboardSidebar() {
       {/* Navigation */}
 
       <nav
-        className={`mt-3 flex min-h-0 flex-1 flex-col overflow-y-auto
-           [scrollbar-width:none]
-    [-ms-overflow-style:none]
-    [&::-webkit-scrollbar]:hidden ${
+        className={`mt-3 flex min-h-0 flex-1 flex-col overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${
           isExpanded
             ? "px-4"
             : "items-center px-1"
@@ -141,12 +131,8 @@ export default function DashboardSidebar() {
             <Link
               key={item.name}
               href={item.href}
-              title={
-                isExpanded
-                  ? undefined
-                  : item.name
-              }
-              className={`group flex h-14 shrink-0 items-center rounded-lg transition ${
+              title={!isExpanded ? item.name : undefined}
+              className={`group flex h-14 shrink-0 items-center rounded-lg transition-all duration-200 ${
                 isExpanded
                   ? "w-full gap-5 px-4"
                   : "w-12 justify-center"
@@ -163,7 +149,7 @@ export default function DashboardSidebar() {
               />
 
               {isExpanded && (
-                <span className="text-sm">
+                <span className="whitespace-nowrap text-sm">
                   {item.name}
                 </span>
               )}
@@ -209,19 +195,6 @@ export default function DashboardSidebar() {
           )}
         </div>
       </div>
-
-      {/* Collapse button */}
-
-      {isExpanded && (
-        <button
-          type="button"
-          onClick={() => setIsExpanded(false)}
-          aria-label="Collapse sidebar"
-          className="absolute -right-4 top-1/2 flex size-8 items-center justify-center rounded-full bg-white text-[#4b6ff8] shadow"
-        >
-          <ChevronLeft size={18} />
-        </button>
-      )}
     </aside>
   );
 }

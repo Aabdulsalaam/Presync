@@ -1,26 +1,78 @@
+
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
-import DashboardSidebar from "../company admin/components/sidebar";
+import DashboardSidebar from "../components/sidebar";
 
 interface AttendanceCardProps {
-  /** Displayed in the top-right badge, e.g. "7:00 am" */
+  /** Displayed in the top-right badge */
   time?: string;
 
   /** Called once all 6 digits are entered */
   onOtpComplete?: (code: string) => void;
+
+  /** Attendance deadline */
+  deadline?: string;
 }
+
+// Warning period before deadline (minutes)
+const WARNING_MINUTES = 15;
 
 export default function AttendancePage({
   time = "7:00 am",
   onOtpComplete,
+  deadline = "2026-11-05T21:47:00",
 }: AttendanceCardProps) {
   const [otp, setOtp] = useState<string[]>(Array(6).fill(""));
   const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
 
+  const [remainingTime, setRemainingTime] = useState<number | null>(null);
+
+  // Update countdown every second
+  useEffect(() => {
+    const updateDeadline = () => {
+      const deadlineTime = new Date(deadline).getTime();
+      setRemainingTime(deadlineTime - Date.now());
+    };
+
+    updateDeadline();
+
+    const interval = setInterval(updateDeadline, 1000);
+
+    return () => clearInterval(interval);
+  }, [deadline]);
+
+  // Determine attendance status
+  const attendanceStatus =
+    remainingTime === null
+      ? "loading"
+      : remainingTime <= 0
+      ? "expired"
+      : remainingTime <= WARNING_MINUTES * 60 * 1000
+      ? "warning"
+      : "normal";
+
+  // QR card: background and border change
+  const qrCardStyle =
+    attendanceStatus === "expired"
+      ? "border-red-500 bg-red-100"
+      : attendanceStatus === "warning"
+      ? "border-[#c5df36] bg-[#eff8c5]"
+      : "border-indigo-200 bg-white";
+
+  // OTP card: only border changes, background stays white
+  const otpCardStyle =
+    attendanceStatus === "expired"
+      ? "border-red-500"
+      : attendanceStatus === "warning"
+      ? "border-[#c5df36]"
+      : "border-indigo-200";
+
+  // Handle OTP input
   const handleChange = (index: number, value: string) => {
-    // Only allow one digit
+    if (attendanceStatus === "expired") return;
+
     const digit = value.replace(/[^0-9]/g, "").slice(-1);
 
     const next = [...otp];
@@ -28,17 +80,18 @@ export default function AttendancePage({
 
     setOtp(next);
 
-    // Move to the next input
+    // Move to next input
     if (digit && index < 5) {
       inputsRef.current[index + 1]?.focus();
     }
 
-    // Run when all six digits have been entered
+    // Run when all six digits are entered
     if (next.every((item) => item !== "")) {
       onOtpComplete?.(next.join(""));
     }
   };
 
+  // Handle backspace
   const handleKeyDown = (
     index: number,
     event: React.KeyboardEvent<HTMLInputElement>
@@ -48,10 +101,13 @@ export default function AttendancePage({
     }
   };
 
+  // Handle OTP paste
   const handlePaste = (
     event: React.ClipboardEvent<HTMLInputElement>
   ) => {
     event.preventDefault();
+
+    if (attendanceStatus === "expired") return;
 
     const pastedCode = event.clipboardData
       .getData("text")
@@ -77,18 +133,41 @@ export default function AttendancePage({
     }
   };
 
+  // Format countdown
+  const formatRemainingTime = () => {
+    if (remainingTime === null) {
+      return "Checking deadline...";
+    }
+
+    if (remainingTime <= 0) {
+      return "Attendance deadline passed";
+    }
+
+    const totalSeconds = Math.floor(remainingTime / 1000);
+
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    return `${hours}h ${minutes}m ${seconds}s remaining`;
+  };
+
   return (
     <div className="flex min-h-screen bg-white">
-      {/* Imported side panel */}
+
+      {/* Existing Sidebar */}
       <DashboardSidebar />
 
-      {/* Attendance content */}
-      <main className="flex-1 p-4 sm:p-6 lg:p-8 lg:pl-[125px]
-          pl-[100px]">
+      {/* Attendance Content */}
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 lg:pl-[125px] pl-[100px]">
+
         <div className="rounded-3xl border-2 border-dotted border-sky-400 p-4 sm:p-5">
+
           <div className="rounded-2xl bg-slate-50/60 p-5 sm:p-8">
+
             {/* Header */}
             <div className="flex items-start justify-between gap-4">
+
               <div>
                 <h1 className="text-2xl font-bold text-slate-900">
                   Attendance
@@ -103,13 +182,38 @@ export default function AttendancePage({
               <span className="shrink-0 rounded-full bg-indigo-100 px-3 py-1 text-xs font-medium text-indigo-600">
                 Time: {time}
               </span>
+
             </div>
 
-            {/* Main attendance panel */}
+            {/* Countdown */}
+            <div
+              className={`mt-5 rounded-xl px-4 py-3 text-sm font-medium ${
+                attendanceStatus === "expired"
+                  ? "bg-red-100 text-red-700"
+                  : attendanceStatus === "warning"
+                  ? "bg-lime-100 text-lime-800"
+                  : "bg-white text-slate-600"
+              }`}
+            >
+              {attendanceStatus === "expired"
+                ? "⚠️ "
+                : attendanceStatus === "warning"
+                ? "⏳ Deadline approaching! "
+                : ""}
+
+              {formatRemainingTime()}
+            </div>
+
+            {/* Main Attendance Panel */}
             <div className="mt-6 rounded-2xl border border-indigo-100 bg-white p-4 sm:p-8">
+
               <div className="flex flex-col gap-6 md:flex-row">
-                {/* QR-code panel */}
-                <div className="flex flex-1 flex-col items-center rounded-xl border border-indigo-200 px-6 py-8 text-center">
+
+                {/* QR Code Panel */}
+                <div
+                  className={`flex flex-1 flex-col items-center rounded-xl border-2 px-6 py-8 text-center transition-colors duration-500 ${qrCardStyle}`}
+                >
+
                   <h2 className="text-base font-semibold text-slate-900">
                     Scan QR Code
                   </h2>
@@ -128,10 +232,14 @@ export default function AttendancePage({
                       priority
                     />
                   </div>
+
                 </div>
 
-                {/* OTP panel */}
-                <div className="flex flex-1 flex-col items-center rounded-xl border border-indigo-200 px-6 py-8 text-center">
+                {/* OTP Panel */}
+                <div
+                  className={`flex flex-1 flex-col items-center rounded-xl border-2 bg-white px-6 py-8 text-center transition-colors duration-500 ${otpCardStyle}`}
+                >
+
                   <h2 className="text-base font-semibold text-slate-900">
                     Enter 6-Digit Access Code
                   </h2>
@@ -141,6 +249,7 @@ export default function AttendancePage({
                   </p>
 
                   <div className="mt-8 flex gap-2 sm:gap-3">
+
                     {otp.map((digit, index) => (
                       <input
                         key={index}
@@ -152,6 +261,7 @@ export default function AttendancePage({
                         maxLength={1}
                         value={digit}
                         aria-label={`OTP digit ${index + 1}`}
+                        disabled={attendanceStatus === "expired"}
                         onChange={(event) =>
                           handleChange(index, event.target.value)
                         }
@@ -159,11 +269,20 @@ export default function AttendancePage({
                           handleKeyDown(index, event)
                         }
                         onPaste={handlePaste}
-                        className="h-11 w-11 rounded-lg border border-indigo-200 text-center text-lg font-medium text-slate-900 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 sm:h-12 sm:w-12"
+                        className="h-11 w-11 rounded-lg border border-indigo-200 text-center text-lg font-medium text-slate-900 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 disabled:cursor-not-allowed disabled:bg-slate-100 sm:h-12 sm:w-12"
                       />
                     ))}
+
                   </div>
+
+                  {attendanceStatus === "expired" && (
+                    <p className="mt-4 text-xs font-medium text-red-600">
+                      Attendance submission is closed.
+                    </p>
+                  )}
+
                 </div>
+
               </div>
             </div>
           </div>
