@@ -1676,12 +1676,9 @@ packages:
   decimal.js-light@2.5.1:
     resolution: {integrity: sha512-qIMFpTMZmny+MMIitAB6D7iVPEorVw6YQRWkvarTkT4tBeSLLiHzcwj6q0MmYSFCiVpiqPJTJEYIrpcPzVEIvg==}
 
-<<<<<<< HEAD
   decimal.js@10.6.0:
     resolution: {integrity: sha512-YpgQiITW3JXGntzdUmyUR1V812Hn8T1YVXhCu+wO3OpS4eU9l4YdD3qjyiKdV6mvV29zapkMeD390UVEf2lkUg==}
 
-=======
->>>>>>> parent of c8a2aee (Revert "feat: new features added")
   deep-eql@5.0.2:
     resolution: {integrity: sha512-h5k/5U50IJJFpzfL6nO9jaaumfjO/f2NjK/oYB2Djzm4p9L+3T9qWpZqZ2hAbLPuuYq9wrU08WQyBTL5GbPk5Q==}
     engines: {node: '>=6'}
@@ -2199,15 +2196,12 @@ packages:
     resolution: {integrity: sha512-5Hh7Y1wQbvY5ooGgPbDaL5iYLAPzMTUrjMulskHLH6wnv/A+1q5rgEaiuqEjB+oxGXIVZs1FF+R/KPN3ZSQYYg==}
     engines: {node: '>=12'}
 
-<<<<<<< HEAD
   is-alphabetical@2.0.1:
     resolution: {integrity: sha512-FWyyY60MeTNyeSRpkM2Iry0G9hpr7/9kD40mD/cGQEuilcZYS4okz8SN2Q6rLCJ8gbCt6fN+rC+6tMGS99LaxQ==}
 
   is-alphanumerical@2.0.1:
     resolution: {integrity: sha512-hmbYhX/9MUMF5uh7tOXyK/n0ZvWpad5caBA17GsC6vyuCqaWliRG5K1qS9inmUhEMaOBIW7/whAnSwveW/LtZw==}
 
-=======
->>>>>>> parent of c8a2aee (Revert "feat: new features added")
   is-array-buffer@3.0.5:
     resolution: {integrity: sha512-DDfANUiiG2wC1qawP66qlTugJeL5HyzMpfr8lLK+jMQirGzNod0B12cFB/9q838Ru27sBwfw78/rdoU7RERz6A==}
     engines: {node: '>= 0.4'}
@@ -4994,11 +4988,8 @@ snapshots:
 
   decimal.js-light@2.5.1: {}
 
-<<<<<<< HEAD
   decimal.js@10.6.0: {}
 
-=======
->>>>>>> parent of c8a2aee (Revert "feat: new features added")
   deep-eql@5.0.2: {}
 
   deep-is@0.1.4: {}
@@ -5675,7 +5666,6 @@ snapshots:
 
   internmap@2.0.3: {}
 
-<<<<<<< HEAD
   is-alphabetical@2.0.1: {}
 
   is-alphanumerical@2.0.1:
@@ -5683,8 +5673,6 @@ snapshots:
       is-alphabetical: 2.0.1
       is-decimal: 2.0.1
 
-=======
->>>>>>> parent of c8a2aee (Revert "feat: new features added")
   is-array-buffer@3.0.5:
     dependencies:
       call-bind: 1.0.9

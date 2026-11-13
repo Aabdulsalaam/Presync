@@ -58,7 +58,7 @@ const menuItems: MenuItem[] = [
   {
     name: "Categories",
     icon: Folder,
-    href: "/company-dashboard",
+    href: "/company-dashboard/categories",
   },
   {
     name: "Settings",
